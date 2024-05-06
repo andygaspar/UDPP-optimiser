@@ -7,7 +7,7 @@ plt.rcParams.update({'font.size': 22})
 plt.rcParams["figure.autolayout"] = True
 
 
-res = pd.read_csv("udpp_tests/cap_n_fl_test_1000.csv")
+res = pd.read_csv("computational_tests/cap_n_fl_test_1000.csv")
 res["reduction"] = res["initial costs"] - res["final costs"]
 
 df_mincost = res[res.model == "mincost"]

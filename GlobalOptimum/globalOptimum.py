@@ -16,7 +16,7 @@ import time
 
 class GlobalOptimum(mS.ModelStructure):
 
-    def __init__(self, slot_list: List[Slot], flight_list: List[Flight]):
+    def __init__(self, slot_list: List[Slot], flight_list: List[Flight], excluded_flights: List[Flight] = None):
 
         super().__init__(slot_list, flight_list)
 
@@ -25,6 +25,7 @@ class GlobalOptimum(mS.ModelStructure):
         self.m.modelSense = GRB.MINIMIZE
         self.m.setParam('OutputFlag', 0)
         self.x = None
+        self.excluded_flights = excluded_flights
 
     def set_variables(self):
         flight: Flight
@@ -46,6 +47,12 @@ class GlobalOptimum(mS.ModelStructure):
                 quicksum(self.x[flight.index, slot.index] for flight in self.flights) <= 1
             )
 
+    def set_excluded_flights(self):
+        for flight in self.excluded_flights:
+            self.m.addConstr(
+               self.x[flight.index, flight.slot.index] == 1
+            )
+
     def set_objective(self):
         flight: Flight
         self.m.setObjective(
@@ -58,6 +65,8 @@ class GlobalOptimum(mS.ModelStructure):
         start = time.time()
         self.set_variables()
         self.set_constraints()
+        if self.excluded_flights:
+            self.set_excluded_flights()
         end = time.time() - start
         if timing:
             print("Variables and constraints setting time ", end)

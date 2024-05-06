@@ -7,7 +7,7 @@ import random
 
 from GlobalOptimum.globalOptimum import GlobalOptimum
 from NNBound.nnBound import NNBoundModel
-import udpp_tests.make_sol_df as sol
+import computational_tests.make_sol_df as sol
 from ScheduleMaker.real_schedule import RealisticSchedule, Regulation
 from UDPP.udppModel import UDPPmodel
 
@@ -15,24 +15,17 @@ pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 
-schedule_maker = RealisticSchedule()
-seed = 0
-np.random.seed(seed)
-random.seed(seed)
 
-HFES = 0
-
-def run_test(df, n_runs, hfes):
-
+def run_test(df, n_runs, sched_maker):
     for i in range(n_runs):
         regulation: Regulation
-        regulation = schedule_maker.get_regulation()
+        regulation = sched_maker.get_regulation()
         print(i, regulation.airport)
         print(regulation.nFlights, regulation.cReduction, regulation.startTime)
-        slot_list, fl_list = schedule_maker.make_sl_fl_from_data(airport=regulation.airport,
-                                                                 n_flights=regulation.nFlights,
-                                                                 capacity_reduction=regulation.cReduction,
-                                                                 compute=True, regulation_time=regulation.startTime)
+        slot_list, fl_list = sched_maker.make_sl_fl_from_data(airport=regulation.airport,
+                                                              n_flights=regulation.nFlights,
+                                                              capacity_reduction=regulation.cReduction,
+                                                              compute=True, regulation_time=regulation.startTime)
 
         global_model = GlobalOptimum(slot_list, fl_list)
         global_model.run()
@@ -58,7 +51,7 @@ def run_test(df, n_runs, hfes):
 
         model_list = [global_model, max_model, udpp_model, udpp_model_5]
         df = sol.append_results(df, model_list, i, regulation.nFlights, regulation.cReduction,
-                                regulation.airport, regulation.startTime, print_df= False)
+                                regulation.airport, regulation.startTime, print_df=False)
 
     return df
 
@@ -72,5 +65,10 @@ df_test = pd.DataFrame(
     columns=["airline", "num flights", "initial costs", "final costs", "reduction %", "run", "n_flights", "c_reduction",
              "model", "init_mis_con", "final_mis_con", "init_curfew", "final_curfew"])
 
-df_test = run_test(n_runs=1000, df=df_test, hfes=0)
-df_test.to_csv("udpp_tests/cap_n_fl_test_1000_hfes_curfew.csv", index_label=False, index=False)
+schedule_maker = RealisticSchedule()
+seed = 0
+np.random.seed(seed)
+random.seed(seed)
+
+df_test = run_test(n_runs=1000, df=df_test, sched_maker=schedule_maker)
+df_test.to_csv("computational_tests/udpp_tests.csv", index_label=False, index=False)

@@ -16,7 +16,7 @@ plt.rcParams.update({'font.size': 22})
 plt.rcParams["figure.autolayout"] = True
 
 udpp_hfes_ = "udpp_0"
-res = pd.read_csv("udpp_tests/cap_n_fl_test_1000_2.csv")
+res = pd.read_csv("computational_tests/cap_n_fl_test_1000_2.csv")
 res["reduction"] = res["initial costs"] - res["final costs"]
 
 bins = [1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 75, 100, 204]
@@ -450,7 +450,7 @@ neg_top = neg[["airline", "num flights", "initial costs", "reduction %", "n_flig
 
 # ******************************* hfes 5
 
-res_5 = pd.read_csv("udpp_tests/cap_n_fl_test_1000_hfes.csv")
+res_5 = pd.read_csv("computational_tests/cap_n_fl_test_1000_hfes.csv")
 res_5["reduction"] = res_5["initial costs"] - res_5["final costs"]
 
 hfes_5 = "udpp_5"
@@ -525,7 +525,7 @@ comp_time = df_udpp_airlines[["num flights", "comp time"]]
 # curfew and missed conntecting
 
 udpp_hfes_ = "udpp_0"
-res = pd.read_csv("udpp_tests/cap_n_fl_test_1000_hfes_curfew.csv")
+res = pd.read_csv("computational_tests/cap_n_fl_test_1000_hfes_curfew.csv")
 res["reduction"] = res["initial costs"] - res["final costs"]
 df_udpp = res[res.model == "udpp_5"]
 

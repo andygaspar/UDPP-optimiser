@@ -23,7 +23,7 @@ class Airline:
 
         self.AUslots = np.array([flight.slot for flight in self.flights])
 
-        self.initialCosts = None
+        self.initialCosts = sum([flight.costVect[flight.slot.index] for flight in self.flights])
 
         self.finalCosts = None
 
