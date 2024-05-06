@@ -86,7 +86,7 @@ class NNBoundModel(mS.ModelStructure):
         self.set_variables()
         self.set_constraints()
         if timing:
-            print("Variables and constraints setting time ", end)
+            print("Variables and constraints setting time ", time.time() - start)
 
         self.set_objective()
 
@@ -94,7 +94,7 @@ class NNBoundModel(mS.ModelStructure):
         # self.m.printStats()
         self.time = time.time() - start
         if timing:
-            print("Simplex time ", end)
+            print("Simplex time ", self.time)
 
         self.assign_flights(self.x)
         self.update_missed_connecting()
