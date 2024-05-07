@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from typing import Union, List, Callable
+from typing import Union, List, Callable, Dict
 from itertools import product
 from ModelStructure.Airline.airline import Airline
 from ModelStructure.Slot import slot as sl
@@ -24,6 +24,7 @@ class ModelStructure:
 
         self.set_cost_vect()
 
+        self.airlines: List[Airline]
         self.airlines, self.airDict, self.airByName = self.make_airlines(air_ctor)
 
         self.numAirlines = len(self.airlines)
@@ -140,7 +141,7 @@ class ModelStructure:
     def update_hitting_curfew(self):
         self.final_hitting_curfew = sum([airline.update_hitting_curfew() for airline in self.airlines])
 
-    def make_airlines(self, air_ctor):
+    def make_airlines(self, air_ctor) -> (List[Airline], Dict, Dict):
 
         air_flight_dict = {}
         for flight in self.flights:

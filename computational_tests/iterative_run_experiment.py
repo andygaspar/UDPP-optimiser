@@ -6,7 +6,8 @@ import numpy as np
 import random
 
 from GlobalOptimum.globalOptimum import GlobalOptimum
-from IterativeGlobal.iterative_global import IterativeGlobal
+from Iterative.iterative_UDPP import IterativeUDPP
+from Iterative.iterative_global import IterativeGlobal
 from NNBound.nnBound import NNBoundModel
 import computational_tests.make_sol_df as sol
 from ScheduleMaker.real_schedule import RealisticSchedule, Regulation
@@ -48,7 +49,12 @@ def run_test(df, n_runs, sched_maker):
         # udpp_model.print_performance()
         sol.append_to_df(udpp_model, "udpp")
 
-        model_list = [global_model, max_model, iterative_model, udpp_model]
+        iterative_udpp = IterativeUDPP(slot_list, fl_list)
+        iterative_udpp.run()
+        # iterative_udpp.print_performance()
+        sol.append_to_df(iterative_udpp, "iter_udpp")
+
+        model_list = [global_model, max_model, iterative_model, udpp_model, iterative_udpp]
         df = sol.append_results(df, model_list, i, regulation.nFlights, regulation.cReduction,
                                 regulation.airport, regulation.startTime, print_df=True)
 
@@ -70,4 +76,4 @@ np.random.seed(seed)
 random.seed(seed)
 
 df_test = run_test(n_runs=100, df=df_test, sched_maker=schedule_maker)
-df_test.to_csv("computational_tests/iteratives_tests.csv", index_label=False, index=False)
+df_test.to_csv("Results/iterative_test_results.csv", index_label=False, index=False)

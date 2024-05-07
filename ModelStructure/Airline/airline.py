@@ -50,6 +50,8 @@ class Airline:
 
         self.final_hitting_curfew = 0
 
+        self.participating_in_UDPP = True
+
     def __str__(self):
         return self.name
 

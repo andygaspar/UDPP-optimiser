@@ -28,12 +28,12 @@ class UDPPmodel(ModelStructure):
         self.computationalTime = None
         super().__init__(slot_list, udpp_flights, air_ctor=Airline)
 
-    def run(self, optimised=True, xp=False):
+    def run(self, optimised=True):
         airline: Airline
         start = time.time()
         for airline in self.airlines:
             airline.initialCosts = self.compute_costs(airline.flights, "initial")
-            if airline.numFlights > 1:
+            if airline.numFlights > 1 and airline.participating_in_UDPP:
                 if optimised:
                     # with HiddenPrints():
                     local_time = time.time()
@@ -43,7 +43,8 @@ class UDPPmodel(ModelStructure):
                 else:
                     local.udpp_local(airline, self.slots)
             else:
-                airline.flights[0].newSlot = airline.flights[0].slot
+                for flight in airline.flights:
+                    flight.newSlot = flight.slot
 
             for flight in airline.flights:
                 flight.localTime = flight.newSlot.time
